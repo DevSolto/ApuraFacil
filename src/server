@@ -1,0 +1,31 @@
+import Fastify from 'fastify';
+import cors from '@fastify/cors';
+import {bulletinController} from './controllers/bulletin'
+
+const app = Fastify({
+  logger: true,
+});
+
+app.register(cors, {
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+});
+
+app.register(bulletinController);
+
+const startServer = async () => {
+  try {
+    await app.listen({ port: 3001, host: '0.0.0.0' });
+    console.log('Server ok');
+  } catch (err) {
+    app.log.error(err);
+    process.exit(1);
+  }
+};
+
+if (process.argv[1].endsWith('server.ts')) {
+  startServer();
+}
+
+
+export default app;

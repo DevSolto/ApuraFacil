@@ -1,0 +1,120 @@
+// schema.prisma
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Election {
+  id              String           @id @default(cuid())
+  processNumber   String
+  date            DateTime
+  round           Int
+  phase           String
+  type            String
+  federativeUnits FederativeUnit[]
+  municipalities  Municipality[]
+}
+
+model FederativeUnit {
+  id             String         @id @default(cuid())
+  abbreviation   String         @unique
+  name           String
+  municipalities Municipality[]
+  election       Election?      @relation(fields: [electionId], references: [id])
+  electionId     String?
+}
+
+model Municipality {
+  id               String          @id @default(cuid())
+  municipalityCode String
+  name             String
+  federativeUnit   FederativeUnit  @relation(fields: [federativeUnitId], references: [id])
+  federativeUnitId String
+  electoralZones   ElectoralZone[]
+  Election         Election?       @relation(fields: [electionId], references: [id])
+  electionId       String?
+}
+
+model ElectoralZone {
+  id                String             @id @default(cuid())
+  zoneCode          String
+  municipality      Municipality       @relation(fields: [municipalityId], references: [id])
+  municipalityId    String
+  electoralSections ElectoralSection[]
+}
+
+model ElectoralSection {
+  id                 String             @id @default(cuid())
+  sectionCode        String
+  electoralZone      ElectoralZone      @relation(fields: [electoralZoneId], references: [id])
+  electoralZoneId    String
+  aggregatedSections String?
+  electronicBallots  ElectronicBallot[]
+  votingLocations    VotingLocation[]
+}
+
+model ElectronicBallot {
+  id              String           @id @default(cuid())
+  serialNumber    String
+  loadCode        String
+  softwareVersion String
+  section         ElectoralSection @relation(fields: [sectionId], references: [id])
+  sectionId       String
+}
+
+model VotingLocation {
+  id           String           @id @default(cuid())
+  locationCode String
+  section      ElectoralSection @relation(fields: [sectionId], references: [id])
+  sectionId    String
+}
+
+model Voting {
+  id              String   @id @default(cuid())
+  position        Position @relation(fields: [positionId], references: [id])
+  positionId      String
+  party           Party?   @relation(fields: [partyId], references: [id])
+  partyId         String?
+  candidateNumber String
+  voteCount       Int
+  legendVotes     Int?
+  totalVotes      Int
+}
+
+model Position {
+  id           String    @id @default(cuid())
+  positionCode String
+  type         Int // 0 - majority, 1 - proportional, 2 - consultation
+  dataVersion  String
+  votings      Voting[]
+  summaries    Summary[]
+}
+
+model Party {
+  id        String   @id @default(cuid())
+  partyCode String   @unique
+  name      String
+  votings   Voting[]
+}
+
+model Summary {
+  id             String   @id @default(cuid())
+  position       Position @relation(fields: [positionId], references: [id])
+  positionId     String
+  eligibleVoters Int
+  nominalVotes   Int
+  blankVotes     Int
+  nullVotes      Int
+  totalVotes     Int
+}
+
+model Security {
+  id               String @id @default(cuid())
+  contentHash      String
+  digitalSignature String
+}

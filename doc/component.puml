@@ -1,0 +1,14 @@
+@startuml
+
+!includeurl http://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container(api, "API back-end", "NodeJs - Typescript", "API REST para funcionalidades do back-end"){
+  Component(controller, "Controller", "Fastify", "Recebe Requisições RTTP")
+  Component(service, "Service", "Funções de serviço", "Contem a logica e as regras de negocio")
+  Component(model, "Model", "Prisma", "Gerencia as operações no banco de dados")
+}
+
+Rel(controller, service, "Chamada de funções")
+Rel(service, model, "Chamada de funções")
+
+@enduml

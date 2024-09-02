@@ -1,0 +1,12 @@
+@startuml ApuraFacil-Context
+
+!includeurl http://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+Person(user, "Usuário", "Usuário que interage com o sistema.")
+System(managerSystem, "Sistema de gertão de dados da votação", "Sistema que vai gerenciar todos os dados fornecidos pelos boletins de urna.")
+System_Ext(verificationSystem,"Sistema de verificação de assinatura digital")
+
+
+Rel(user, managerSystem, "Usa")
+Rel(managerSystem, verificationSystem, "Verifica a assinatura digital do boletim")
+@enduml

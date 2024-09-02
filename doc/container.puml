@@ -1,0 +1,17 @@
+@startuml ApuraFacilContainer
+
+!includeurl http://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person_Ext(user, "Usuário", "Usuario que interage com o sistema")
+Container(webApp, "Aplicaçao Web", "Next.js", "Front-end da aplicação web")
+Container(mobileApp, "Aplicaçao Mobile", "React Native","Front-end da aplicação mobile")
+Container(api, "API back-end", "NodeJs - Typescript", "API REST para funcionalidades do back-end")
+ContainerDb(database, "Banco de dados", "PostgreSQL", "Armazena informaçoes do sistema")
+
+Rel(user, webApp, "Usa")
+Rel(user, mobileApp, "Usa")
+Rel(webApp, api, "Requisições HTTP")
+Rel(mobileApp, api, "Requisições HTTP")
+Rel(api, database, "Usa")
+
+@enduml
